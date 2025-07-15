@@ -3,14 +3,12 @@ terraform {
   required_providers {
     docker = {
       source  = "kreuzwerker/docker"
-      version = "~> 3.6.2"
+      version = "~> 3.0"
     }
   }
 }
 
-provider "docker" {
-  host = "unix:///var/run/docker.sock"
-}
+provider "docker" {}
 
 resource "docker_image" "this" {
   name = var.image
