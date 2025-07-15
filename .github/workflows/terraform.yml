@@ -17,8 +17,3 @@ jobs:
         path: [clickhouse, postgres, redis]
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.4.0
