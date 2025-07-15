@@ -1,6 +1,7 @@
 name: Terraform
 
 on:
+  workflow_dispatch:  # Ручной запуск через UI GitHub
   pull_request:
   push:
     branches:
