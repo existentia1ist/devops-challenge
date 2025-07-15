@@ -1,0 +1,7 @@
+name: Test
+on: [workflow_dispatch, push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Workflow works at $(date)"
