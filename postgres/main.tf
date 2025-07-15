@@ -16,7 +16,7 @@ resource "docker_image" "this" {
 
 resource "docker_container" "this" {
   name  = var.container_name
-  image = docker_image.postgres_image.image_id
+  image = docker_image.this.image_id
 
   env = [
     "POSTGRES_DB=${var.db}",
