@@ -16,7 +16,7 @@ resource "docker_image" "this" {
 
 resource "docker_container" "this" {
   name  = var.container_name
-  image = docker_image.this.latest
+  image = docker_image.this.image_id
 
   command = ["redis-server", "--appendonly", "yes"]
 
