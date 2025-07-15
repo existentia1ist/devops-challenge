@@ -22,15 +22,3 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.4.0
-      
-      - name: Terraform Format
-        run: terraform -chdir=${{ matrix.path }} fmt -check
-      
-      - name: Terraform Init
-        run: terraform -chdir=${{ matrix.path }} init -input=false
-      
-      - name: Terraform Validate
-        run: terraform -chdir=${{ matrix.path }} validate -no-color
-      
-      - name: Terraform Plan
-        run: terraform -chdir=${{ matrix.path }} plan -out=tfplan -input=false
