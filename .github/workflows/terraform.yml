@@ -70,3 +70,4 @@ jobs:
     
       - name: Load data
         run: python scripts/load_data.py
+        # Test trigger
