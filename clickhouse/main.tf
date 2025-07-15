@@ -29,7 +29,7 @@ resource "docker_container" "this" {
   }
 
   volumes {
-    host_path      = "${path.module}/data"
+    host_path      = "/${path.module}/data"
     container_path = "/var/lib/clickhouse"
   }
 
