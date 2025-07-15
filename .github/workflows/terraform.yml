@@ -1,20 +1,83 @@
 name: Terraform CI/CD
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Ручной запуск
   push:
-    branches: [master]
+    branches: [master]  # Триггер на push в master
   pull_request:
-    branches: [master]
+    branches: [master]  # Триггер на PR в master
 
 jobs:
   terraform-checks:
-    name: "Terraform Checks"
+    name: "Terraform Checks (${{ matrix.path }})"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path: [clickhouse, postgres, redis]  # Матрица конфигураций
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.4.0
+      
+      - name: Show context
+        run: |
+          echo "Processing ${{ matrix.path }}"
+          echo "Event: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+      
+      - name: Terraform Init
+        run: terraform -chdir=${{ matrix.path }} init -input=false
+      
+      - name: Terraform Validate
+        run: terraform -chdir=${{ matrix.path }} validate -no-color
+      
+      - name: Terraform Plan
+        run: terraform -chdir=${{ matrix.path }} plan -out=tfplan -input=false
+
+  terraform-apply:
+    name: "Apply (${{ matrix.path }})"
+    needs: terraform-checks
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment: production
+    strategy:
+      matrix:
+        path: [clickhouse, postgres, redis]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.4.0
+      
+      - name: Apply changes
+        run: terraform -chdir=${{ matrix.path }} apply -auto-approve -input=false
+
+  load-data:
+    name: "Load Test Data"
+    needs: terraform-apply
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Debug
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
         run: |
-          echo "Event: ${{ github.event_name }}"
-          echo "Ref: ${{ github.ref }}"
-          echo "This job should never be skipped!"
+          python -m pip install --upgrade pip
+          pip install requests psycopg2-binary clickhouse-driver redis
+      
+      - name: Load data
+        run: python scripts/load_data.py
+        env:
+          CLICKHOUSE_HOST: localhost
+          POSTGRES_HOST: localhost
+          REDIS_HOST: localhost
