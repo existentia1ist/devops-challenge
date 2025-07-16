@@ -8,26 +8,22 @@ on:
     branches: [master]  # Триггер на PR в master
 
 jobs:
-  terraform-checks:
+  terraform-plan:
     name: "Terraform Checks (${{ matrix.path }})"
     runs-on: ubuntu-latest
     strategy:
       matrix:
         path: [clickhouse, postgres, redis]  # Матрица конфигураций
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       
-      - name: Setup Terraform
+      - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.4.0
       
-      - name: Show context
-        run: |
-          echo "Processing ${{ matrix.path }}"
-          echo "Event: ${{ github.event_name }}"
-          echo "Ref: ${{ github.ref }}"
-      
+      - name: Terraform Format
+        run: terraform -chdir=${{ matrix.path }} fmt -check -recursive
+        
       - name: Terraform Init
         run: terraform -chdir=${{ matrix.path }} init -input=false
       
@@ -39,31 +35,37 @@ jobs:
 
   terraform-apply:
     name: "Apply (${{ matrix.path }})"
-    needs: terraform-checks
+    needs: terraform-plan
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
-    environment: production
+    environment:
+      name: production
     strategy:
       matrix:
         path: [clickhouse, postgres, redis]
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2
+        
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_wrapper: false
+          
       - name: Terraform Init
         run: terraform -chdir=${{ matrix.path }} init
+        
       - name: Terraform Apply
         run: terraform -chdir=${{ matrix.path }} apply -auto-approve
+        
       - name: Verify container
         run: |
           sleep 30
           docker ps -a
           docker inspect ${{ matrix.path }}
-
-      - uses: actions/checkout@v4
+          curl -s http://localhost:8123/ping
+          pg_isready -h localhost
+          redis-cli ping
     
       - name: Set up Python
         uses: actions/setup-python@v4
