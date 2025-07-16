@@ -58,39 +58,13 @@ jobs:
       - name: Terraform Apply
         run: terraform -chdir=${{ matrix.path }} apply -auto-approve
 
-  deploy-infra:
-    name: "Deploy Infrastructure"
-    needs: terraform-apply
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install docker-compose -y
-
-      - name: Start all services
-        run: |
-          docker-compose up -d
-          docker-compose ps
-          sleep 10  # Ожидаем инициализацию
-          
       - name: Verify services
         run: |
           docker ps -a
-          docker inspect clickhouse-server
-          docker inspect postgres-server
-          docker inspect redis-server
-      - name: Network diagnostics
-        run: |
-          echo "Container IPs:"
-          echo "ClickHouse: $(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' clickhouse-server)"
-          echo "Testing connection to ClickHouse:"
-          docker run --rm --network devops-challenge_default appropriate/curl curl -v http://clickhouse:8123/ping
-          echo "Testing port 9000:"
-          docker run --rm --network devops-challenge_default appropriate/nc nc -zv clickhouse 9000
+          docker inspect clickhouse
+          docker inspect postgres
+          docker inspect redis
+
         
   load-data:
     name: "Load Test Data"
