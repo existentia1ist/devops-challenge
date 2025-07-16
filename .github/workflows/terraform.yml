@@ -75,6 +75,6 @@ jobs:
           pip install requests psycopg2-binary clickhouse-driver redis
           pip show requests psycopg2-binary clickhouse-driver redis
             
-      - name: Load data
+      - name: Load data to ${{ matrix.path }}
         run: |
           python scripts/load_data.py
