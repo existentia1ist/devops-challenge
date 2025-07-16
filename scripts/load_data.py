@@ -17,7 +17,7 @@ def fetch_prices():
 
 def write_clickhouse(data):
     client = Client(
-        host=os.getenv("CLICKHOUSE_HOST", "localhost"),
+        host=os.getenv("CLICKHOUSE_HOST", "clickhouse-server"),
         port=int(os.getenv("CLICKHOUSE_PORT", 9000)),
     )
     client.execute(
@@ -36,7 +36,7 @@ def write_clickhouse(data):
 
 def write_postgres(data):
     conn = psycopg2.connect(
-        host=os.getenv("POSTGRES_HOST", "localhost"),
+        host=os.getenv("POSTGRES_HOST", "postgres-server"),
         port=int(os.getenv("POSTGRES_PORT", 5432)),
         user=os.getenv("POSTGRES_USER", "postgres"),
         password=os.getenv("POSTGRES_PASSWORD", "postgres"),
@@ -65,7 +65,7 @@ def write_postgres(data):
 
 def write_redis(data):
     r = redis.Redis(
-        host=os.getenv("REDIS_HOST", "localhost"),
+        host=os.getenv("REDIS_HOST", "redis-server"),
         port=int(os.getenv("REDIS_PORT", 6379)),
         decode_responses=True,
     )
