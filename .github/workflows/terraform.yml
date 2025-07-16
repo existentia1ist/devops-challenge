@@ -66,9 +66,8 @@ jobs:
     environment:
       name: production
     strategy:
-      fail-fast: false  # Продолжать при ошибках в матрице
       matrix:
-        target_db: ['clickhouse', 'postgres', 'redis']
+        path: [clickhouse, postgres, redis]
     steps:
       - name: Verify container
         run: |
