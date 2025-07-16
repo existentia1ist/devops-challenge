@@ -62,7 +62,6 @@ jobs:
         run: |
           sleep 30
           docker ps -a
-          docker exec clickhouse clickhouse-client --query="SHOW GRANTS FOR admin"
           docker inspect ${{ matrix.path }}
     
       - name: Set up Python
@@ -78,5 +77,4 @@ jobs:
             
       - name: Load data
         run: |
-          docker exec clickhouse clickhouse-client --query="SELECT 1"
           python scripts/load_data.py
