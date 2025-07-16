@@ -60,9 +60,10 @@ jobs:
 
       - name: Verify container
         run: |
-          sleep 30
+          sleep 5
           docker ps -a
           docker inspect ${{ matrix.path }}
+          docker exec -it postgres psql -U postgres
       
       - name: Set up Python
         uses: actions/setup-python@v4
