@@ -63,7 +63,7 @@ jobs:
           sleep 5
           docker ps -a
           docker inspect ${{ matrix.path }}
-          docker exec -it postgres psql -U postgres
+          docker exec postgres psql -U postgres
       
       - name: Set up Python
         uses: actions/setup-python@v4
