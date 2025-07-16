@@ -63,18 +63,24 @@ jobs:
           sleep 30
           docker ps -a
           docker inspect ${{ matrix.path }}
+          
+      - name: Checkout
+        uses: actions/checkout@v4
     
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-            
-      - name: Load data
+
+      - name: Install dependencies
         run: |
-          python -m venv venv
+          python3 -m venv venv
           source venv/bin/activate
           python3 -m pip install --upgrade pip
           python3 -m pip install requests psycopg2-binary clickhouse-driver redis
           python3 -m pip show requests psycopg2-binary clickhouse-driver redis
-          chmod +x scripts/load_data.py
+            
+      - name: Load data
+        run: |
+          source venv/bin/activate
           python3 scripts/load_data.py
