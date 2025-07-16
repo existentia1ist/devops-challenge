@@ -105,6 +105,6 @@ jobs:
       - name: Load data
         run: python scripts/load_data.py
         env:
-          CLICKHOUSE_HOST: localhost
-          POSTGRES_HOST: localhost
-          REDIS_HOST: localhost
+          CLICKHOUSE_HOST: clickhouse-server
+          POSTGRES_HOST: postgres-server
+          REDIS_HOST: redis-server
