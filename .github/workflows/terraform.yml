@@ -57,19 +57,11 @@ jobs:
         run: terraform -chdir=${{ matrix.path }} init
       - name: Terraform Apply
         run: terraform -chdir=${{ matrix.path }} apply -auto-approve
-
-  verify-services:
-    name: Verify services
-    needs: terraform-apply
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Docker containers
+      - name: Verify container
         run: |
+          sleep 30
           docker ps -a
-          docker inspect clickhouse
-          docker inspect postgres
-          docker inspect redis
+          docker inspect ${{ matrix.path }}
 
         
   load-data:
