@@ -19,6 +19,8 @@ def write_clickhouse(data):
     client = Client(
         host=os.getenv("CLICKHOUSE_HOST", "localhost"),
         port=int(os.getenv("CLICKHOUSE_PORT", 9000)),
+        user=os.getenv("CLICKHOUSE_USER", "admin"),
+        password=os.getenv("CLICKHOUSE_PASSWORD", "admin"),
     )
     client.execute(
         """
