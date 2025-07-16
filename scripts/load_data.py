@@ -18,6 +18,7 @@ def fetch_prices():
 def write_clickhouse(data):
     client = Client(
         host=os.getenv("CLICKHOUSE_HOST", "clickhouse"),
+        print(f"Connecting to ClickHouse at: {clickhouse_host}")
         port=int(os.getenv("CLICKHOUSE_PORT", 9000)),
     )
     client.execute(
