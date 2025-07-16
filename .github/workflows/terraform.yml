@@ -58,24 +58,11 @@ jobs:
       - name: Terraform Apply
         run: terraform -chdir=${{ matrix.path }} apply -auto-approve
 
-
-  load-data:
-    name: "Load data to (${{ matrix.path }})"
-    needs: terraform-apply
-    runs-on: ubuntu-latest
-    environment:
-      name: production
-    strategy:
-      matrix:
-        path: [clickhouse, postgres, redis]
-    steps:
       - name: Verify container
         run: |
           sleep 30
           docker ps -a
           docker inspect ${{ matrix.path }}
-      
-      - uses: actions/checkout@v4
       
       - name: Set up Python
         uses: actions/setup-python@v4
