@@ -62,7 +62,7 @@ jobs:
         run: |
           sleep 30
           docker ps -a
-          docker exec clickhouse clickhouse-client cat /etc/clickhouse-server/users.xml
+          docker exec clickhouse cat /etc/clickhouse-server/users.xml
           docker inspect ${{ matrix.path }}
     
       - name: Set up Python
