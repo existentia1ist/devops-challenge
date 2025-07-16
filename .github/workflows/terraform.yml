@@ -83,6 +83,14 @@ jobs:
           docker inspect clickhouse-server
           docker inspect postgres-server
           docker inspect redis-server
+      - name: Network diagnostics
+        run: |
+          echo "Container IPs:"
+          echo "ClickHouse: $(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' clickhouse-server)"
+          echo "Testing connection to ClickHouse:"
+          docker run --rm --network devops-challenge_default appropriate/curl curl -v http://clickhouse:8123/ping
+          echo "Testing port 9000:"
+          docker run --rm --network devops-challenge_default appropriate/nc nc -zv clickhouse 9000
         
   load-data:
     name: "Load Test Data"
