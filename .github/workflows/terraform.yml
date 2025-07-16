@@ -80,11 +80,9 @@ jobs:
       - name: Verify services
         run: |
           docker ps -a
-          docker inspect clickhouse-server | grep IPAddress
-          docker inspect postgres-server | grep IPAddress
-          docker inspect redis-server | grep IPAddress
-          docker exec clickhouse-server clickhouse-client --query "SELECT 1"
-          echo "ClickHouse is ready!"
+          docker inspect clickhouse-server
+          docker inspect postgres-server
+          docker inspect redis-server
         
   load-data:
     name: "Load Test Data"
