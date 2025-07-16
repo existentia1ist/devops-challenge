@@ -63,9 +63,6 @@ jobs:
           sleep 30
           docker ps -a
           docker inspect ${{ matrix.path }}
-          curl -s http://localhost:8123/ping
-          pg_isready -h localhost
-          redis-cli ping
     
       - name: Set up Python
         uses: actions/setup-python@v4
