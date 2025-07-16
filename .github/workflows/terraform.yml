@@ -65,6 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check Docker containers
+        run: |
           docker ps -a
           docker inspect clickhouse
           docker inspect postgres
