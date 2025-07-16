@@ -63,7 +63,20 @@ jobs:
           sleep 5
           docker ps -a
           docker inspect ${{ matrix.path }}
-          docker exec postgres psql -U postgres
+          # Проверка только для postgres
+          if [ "${{ matrix.path }}" == "postgres" ]; then
+            docker exec ${{ matrix.path }} psql -U postgres -c "\du"
+          fi
+    
+          # Проверка только для redis
+          if [ "${{ matrix.path }}" == "redis" ]; then
+            docker exec ${{ matrix.path }} redis-cli ACL LIST
+          fi
+    
+          # Проверка только для clickhouse
+          if [ "${{ matrix.path }}" == "clickhouse" ]; then
+            docker exec ${{ matrix.path }} clickhouse-client --query "SHOW USERS"
+          fi
       
       - name: Set up Python
         uses: actions/setup-python@v4
