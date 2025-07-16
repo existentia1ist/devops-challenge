@@ -68,7 +68,7 @@ jobs:
         
   load-data:
     name: "Load Test Data"
-    needs: [terraform-apply, deploy-infra]
+    needs: [terraform-apply]
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
