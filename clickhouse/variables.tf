@@ -17,3 +17,13 @@ variable "native_port" {
   type    = number
   default = 9000
 }
+
+variable "user" {
+  type    = string
+  default = "admin"
+}
+
+variable "password" {
+  type    = string
+  default = "admin"
+}
