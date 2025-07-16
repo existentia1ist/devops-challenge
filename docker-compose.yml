@@ -11,8 +11,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - app-net
 
   postgres:
     image: postgres:15
@@ -26,8 +24,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - app-net
 
   redis:
     image: redis:7
@@ -36,10 +32,3 @@ services:
       - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-    networks:
-      - app-net
-
-networks:
-  default:
-    name: app-network
-    driver: bridge
