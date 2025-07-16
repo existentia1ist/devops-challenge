@@ -57,6 +57,27 @@ jobs:
         run: terraform -chdir=${{ matrix.path }} init
       - name: Terraform Apply
         run: terraform -chdir=${{ matrix.path }} apply -auto-approve
+
+  deploy-infra:
+    name: "Deploy Infrastructure"
+    needs: terraform-apply
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Start all services
+        run: |
+          docker-compose up -d
+          docker-compose ps
+          sleep 10  # Ожидаем инициализацию
+          
+      - name: Verify services
+        run: |
+          docker ps -a
+          docker inspect clickhouse-server | grep IPAddress
+          docker inspect postgres-server | grep IPAddress
+          docker inspect redis-server | grep IPAddress
         
   load-data:
     name: "Load Test Data"
