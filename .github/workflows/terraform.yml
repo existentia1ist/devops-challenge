@@ -91,4 +91,4 @@ jobs:
             
       - name: Load data to (${{ matrix.path }})
         run: |
-          python scripts/load_data.py
+          python scripts/load_data_${{ matrix.path }}.py
