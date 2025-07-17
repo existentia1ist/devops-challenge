@@ -92,3 +92,20 @@ jobs:
       - name: Load data to (${{ matrix.path }})
         run: |
           python scripts/load_data_${{ matrix.path }}.py
+
+      - name: Verify data in (${{ matrix.path }})
+        run: | 
+          # Проверка только для postgres
+          if [ "${{ matrix.path }}" == "postgres" ]; then
+            docker exec postgres psql -U postgres -d app -c "SELECT * FROM market;"
+          fi
+    
+          # Проверка только для redis
+          if [ "${{ matrix.path }}" == "redis" ]; then
+            docker exec redis redis-cli -h 127.0.0.1 HGETALL
+          fi
+    
+          # Проверка только для clickhouse
+          if [ "${{ matrix.path }}" == "clickhouse" ]; then
+            docker exec clickhouse clickhouse-client --user=admin --password=admin --query="SELECT * FROM market"
+          fi
