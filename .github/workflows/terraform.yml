@@ -102,7 +102,9 @@ jobs:
     
           # Проверка только для redis
           if [ "${{ matrix.path }}" == "redis" ]; then
-            docker exec redis redis-cli -h 127.0.0.1 HGETALL
+            docker exec redis redis-cli -h 127.0.0.1 KEYS "coin:*"
+            docker exec redis redis-cli -h 127.0.0.1 HGETALL "coin:bitcoin"
+            docker exec redis redis-cli -h 127.0.0.1 HGETALL "coin:ethereum"          
           fi
     
           # Проверка только для clickhouse
